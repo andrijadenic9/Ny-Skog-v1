@@ -1,0 +1,7 @@
+@use "../mixins/mixins" as *;
+@use "../variables" as *;
+/* Text image mask */ 
+.image-mask {
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}

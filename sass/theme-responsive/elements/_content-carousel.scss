@@ -1,0 +1,17 @@
+@use "../../mixins/mixins" as *;
+@use "../../variables" as *;
+@include respond-to('phone-landscape') {
+    .text-slider-style-05 {
+        .swiper-slide {
+            -webkit-filter: grayscale(0);
+            filter:grayscale(0); 
+            opacity:1;
+            .services-box-style-01 {
+                .icon-box {
+                    opacity: 1;
+                }
+            }
+        }
+
+    }
+}

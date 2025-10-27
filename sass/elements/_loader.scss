@@ -1,0 +1,12 @@
+.contact-form-style-03 {
+  button.submit {
+    transition: opacity .2s ease;
+
+    &.is-loading,
+    &:disabled {
+      opacity: .6;          // vizuelno “zauzeto”
+      cursor: wait;         // kursor za loading
+      pointer-events: none; // dodatna sigurnost protiv klika
+    }
+  }
+}

@@ -1,0 +1,85 @@
+/* -------------------------------------------------------
+
+    Theme Name: Crafto - The Multipurpose HTML5 Template
+    Theme URL: https://craftohtml.themezaa.com/
+    Description: Elevate your online presence with Crafto - a modern, versatile, multipurpose Bootstrap 5 responsive HTML5, SCSS template using highly creative 56+ ready demos.
+    Author: ThemeZaa - https://www.themezaa.com/
+    Author ThemeForest URL: https://themeforest.net/user/themezaa
+    Copyright(c) 2025 themezaa.com
+    Version: 3.0
+
+------------------------------------------------------- */
+
+// Initialize
+@use "variables" as *; // For SCSS variables 
+@use "mixins/mixins" as *;
+
+// Core CSS 
+@use "theme-responsive/core/reset";
+@use "theme-responsive/core/typography";
+@use "theme-responsive/core/classes";
+@use "theme-responsive/core/loop"; 
+
+// Header
+@use "theme-responsive/header/header";
+
+// Page title
+@use "theme-responsive/titlebar/page-titles";
+
+// Layouts
+@use "theme-responsive/layouts/sidebar";
+@use "theme-responsive/layouts/grid";
+
+// Elements
+@use "theme-responsive/elements/accordions-and-toggles";
+@use "theme-responsive/elements/alert-box";
+@use "theme-responsive/elements/blockquote";
+@use "theme-responsive/elements/buttons";
+@use "theme-responsive/elements/clients";
+@use "theme-responsive/elements/columns";
+@use "theme-responsive/elements/contact-form";
+@use "theme-responsive/elements/content-carousel";
+@use "theme-responsive/elements/countdown";
+@use "theme-responsive/elements/counters";
+@use "theme-responsive/elements/divider";
+@use "theme-responsive/elements/drop-caps";
+@use "theme-responsive/elements/event";
+@use "theme-responsive/elements/fancy-heading";
+@use "theme-responsive/elements/fancy-text-box";
+@use "theme-responsive/elements/google-map";
+@use "theme-responsive/elements/heading"; 
+@use "theme-responsive/elements/highlights";
+@use "theme-responsive/elements/icon-with-text";
+@use "theme-responsive/elements/image-gallery";
+@use "theme-responsive/elements/instagram";
+@use "theme-responsive/elements/interactive-banners";
+@use "theme-responsive/elements/lists";
+@use "theme-responsive/elements/media";
+@use "theme-responsive/elements/modal-popup";
+@use "theme-responsive/elements/parallax-scrolling";
+@use "theme-responsive/elements/particles";
+@use "theme-responsive/elements/pie-chart";
+@use "theme-responsive/elements/pricing-table";
+@use "theme-responsive/elements/process-step";
+@use "theme-responsive/elements/progress-bar";
+@use "theme-responsive/elements/reviews";
+@use "theme-responsive/elements/rotate-box";
+@use "theme-responsive/elements/services";
+@use "theme-responsive/elements/sliding-box";
+@use "theme-responsive/elements/social-icons";
+@use "theme-responsive/elements/subscribe";
+@use "theme-responsive/elements/tab";
+@use "theme-responsive/elements/team";
+@use "theme-responsive/elements/testimonials";
+
+// Blog
+@use "theme-responsive/blog/blog";
+
+// Portfolio
+@use "theme-responsive/portfolio/portfolio";
+
+// Shop
+@use "theme-responsive/shop/shop";
+
+// Footer
+@use "theme-responsive/footer/footer";

@@ -1,0 +1,14 @@
+@use "../../mixins/mixins" as *;
+@use "../../variables" as *;
+@include respond-to('tablet') {
+    .services-box-style-09 {
+        &:hover {
+            .reveal-title {
+                padding-left: 0;
+            }
+            .reveal-action {
+                padding-right: 0;
+            }
+        }
+    }
+}

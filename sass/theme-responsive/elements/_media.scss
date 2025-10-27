@@ -1,0 +1,7 @@
+@use "../../mixins/mixins" as *;
+@use "../../variables" as *;
+@include respond-to('tablet') {
+    .html-video {
+        height: 100%;
+    }
+}

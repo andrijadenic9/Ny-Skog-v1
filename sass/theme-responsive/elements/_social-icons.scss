@@ -1,0 +1,41 @@
+@use "../../mixins/mixins" as *;
+@use "../../variables" as *;
+@include respond-to('tablet') {
+    .social-icon-style-06 {
+        ul {
+            li {
+                a {
+                    padding: 0 20px;
+                }
+            }
+        }
+    }
+}
+@include respond-to('phone-landscape') {
+    .elements-social {
+        ul {
+            li { 
+                margin-bottom: 20px;
+            }
+        }
+    }
+    .social-icon-style-11 {
+        ul {
+            flex-direction: column;
+            li {
+                margin-bottom: 0;
+                a {
+                    border-right: 0;
+                    border-bottom:1px solid var(--extra-medium-gray);
+                }
+            }
+        }
+    }
+}
+@include respond-to('phone-portrait') {
+    .large-icon, .medium-icon, .extra-large-icon {
+        li {
+            margin: 0 6px; 
+        }
+    }
+}
