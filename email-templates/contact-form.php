@@ -1,11 +1,20 @@
 <?php
 // contact-form.php
 
-// ============== PROD ERROR HANDLING ==============
-ini_set('display_errors', 0);          // NEMOJ prikazivati greške u outputu
+// QUICK PORT TEST (TEMPORARY!)
+// $h = gethostbyname('mail.nyskog.no');
+// foreach ([465,587] as $p) {
+//   $t=@fsockopen($h,$p,$e,$s,5);
+//   echo $t ? "OK $h:$p\n" : "FAIL $h:$p ($e $s)\n";
+//   if($t) fclose($t);
+// }
+// exit;
+
+// =================== DEV DIJAGNOSTIKA (opciono) ===================
+ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
-error_reporting(E_ALL);                // i dalje loguj sve
-// ================================================
+error_reporting(E_ALL);
+// =================================================================
 
 // Ako je nešto već otišlo u output buffer, očisti
 if (ob_get_length()) { ob_end_clean(); }
@@ -27,8 +36,7 @@ $RECAPTCHA_SECRET = '6LeH7vErAAAAAN7umWsonOBHsafZS97-GnkxBVhD'; // <-- tvoj V3 S
 
 // SMTP (PHPMailer)
 $SMTP_HOST = 'mail.nyskog.no';
-// $SMTP_PORT = 465; // 465 = SMTPS (SSL), 587 = STARTTLS
-// $SMTP_PORT = 587;      // ⬅️ koristi 587
+$SMTP_PORT = 465; // 465 = SMTPS (SSL), 587 = STARTTLS
 $SMTP_USER = 'post@nyskog.no';
 $SMTP_PASS = 'x@QxyGFVjwon'; // <-- lozinka
 
@@ -180,39 +188,47 @@ $mail = new PHPMailer(true);
 try {
   $mail->CharSet   = 'UTF-8';
   $mail->isSMTP();
+
+  // 1) Hostname (NE IP) – zbog TLS/SNI i provere CN
   $mail->Host       = $SMTP_HOST;
   $mail->SMTPAuth   = true;
   $mail->Username   = $SMTP_USER;
   $mail->Password   = $SMTP_PASS;
 
-  // (A) forsiraj IPv4 ako IPv6 pravi problem
-  $resolvedHost = gethostbyname($SMTP_HOST); // "mail.nyskog.no" -> "x.x.x.x"
-  $mail->Host = $resolvedHost ?: $SMTP_HOST;
+  // 2) Odredi port/protokol preko IP-a (samo za probe)
+  $ip = gethostbyname('mail.nyskog.no');
+  $probe = function(int $port) use ($ip) {
+    $fp = @fsockopen($ip, $port, $errno, $errstr, 5);
+    if ($fp) { fclose($fp); return true; }
+    return false;
+  };
 
-  // (B) kratki timeout i (po želji) debug u error_log
+  if ($probe(465)) {
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;   // implicit SSL
+    $mail->Port       = 465;
+  } elseif ($probe(587)) {
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // STARTTLS
+    $mail->Port       = 587;
+  } elseif ($probe(25)) {
+  // Bez enkripcije
+  $mail->SMTPSecure = false;
+  $mail->SMTPAutoTLS = false; // nemoj ni pokušavati STARTTLS na 25
+  $mail->Port       = 25;
+  } else {
+    throw new Exception('SMTP unavailable on 465/587/25');
+  }
+
+  // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // SSL (465)
+  // $mail->Port       = $SMTP_PORT;
+  
+  // (po želji) timeout i “čist” debug u error_log
   $mail->Timeout = 15;
-  // $mail->SMTPDebug  = SMTP::DEBUG_CONNECTION; // uključi samo dok testiraš
+  // $mail->SMTPDebug = SMTP::DEBUG_CONNECTION; // uključi samo dok testiraš
   // $mail->Debugoutput = 'error_log';
 
-  // (C) probaj 465 (SMTPS), pa 587 (STARTTLS)
-  $endpoints = [
-    ['port' => 465, 'secure' => PHPMailer::ENCRYPTION_SMTPS],
-    ['port' => 587, 'secure' => PHPMailer::ENCRYPTION_STARTTLS],
-  ];
-  $chosen = null;
-  foreach ($endpoints as $ep) {
-    $fp = @fsockopen($mail->Host, $ep['port'], $errno, $errstr, 5);
-    if ($fp) { fclose($fp); $chosen = $ep; break; }
-  }
-  if (!$chosen) {
-    throw new Exception("Nije moguće uspostaviti TCP vezu ka {$SMTP_HOST} (pokušana vrata: 465 i 587).");
-  }
-  $mail->Port       = $chosen['port'];
-  $mail->SMTPSecure = $chosen['secure'];
-
-  // From/Reply-To/To
   $mail->setFrom($FROM_EMAIL, $FROM_NAME);
   $mail->addReplyTo($email, $name);
+
   foreach ($TO as $rcpt) {
     $mail->addAddress($rcpt['email'], $rcpt['name'] ?? '');
   }
@@ -231,11 +247,21 @@ try {
     exit;
   }
 
-  echo json_encode(["ok"=>true,"message"=>"Meldingen er sendt. Takk!"]); // Poruka je uspešno poslata. Hvala!
-  exit;
+//   echo json_encode(["ok"=>true,"message"=>"Meldingen er sendt. Takk!"]); // Poruka je uspešno poslata. Hvala!
+//   exit;
+  
+  echo json_encode([
+  "ok" => true,
+  "message" => "Meldingen er sendt. Takk!",
+  "debug" => [
+    "host"   => $mail->Host,
+    "port"   => $mail->Port,
+    "secure" => $mail->SMTPSecure, // "ssl" ili "tls"
+  ]
+]);
 
 } catch (Exception $e) {
-  echo json_encode(["ok"=>false,"message"=>"Sendingen mislyktes: ".$mail->ErrorInfo.' '.$e->getMessage()]); // Slanje nije uspelo
+  echo json_encode(["ok"=>false,"message"=>"Sendingen mislyktes: ".$mail->ErrorInfo]); // Slanje nije uspelo:
   exit;
 }
 /* ==================================================================== */
