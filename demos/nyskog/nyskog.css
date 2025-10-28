@@ -89,6 +89,7 @@ h6 {
 }
 .bg-very-light-green {
     background-color: #ebf3ed;
+    height: unset;
 }
 /* Transparent background color */
 .bg-gradient-green-transparent {
@@ -176,5 +177,11 @@ footer ul li {
     /* Background image */
     .sm-background-position-top-center {
         background-position: top center !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .bg-very-light-green {
+        height: 50vh;
     }
 }
