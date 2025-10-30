@@ -89,6 +89,8 @@ h6 {
 }
 .bg-very-light-green {
     background-color: #ebf3ed;
+}
+.hero-custom-height {
     height: unset;
 }
 /* Transparent background color */
@@ -181,7 +183,13 @@ footer ul li {
 }
 
 @media screen and (max-width: 768px) {
-    .bg-very-light-green {
+    .hero-custom-height {
         height: 50vh;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .hero-custom-height {
+        height: 60vh;
     }
 }
